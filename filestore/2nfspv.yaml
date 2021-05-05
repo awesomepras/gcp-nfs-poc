@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfsfileserver
+spec:
+  capacity:
+    storage: 1Ti
+  accessModes:
+    - ReadWriteMany
+  storageClassName: filestore-rwx
+  nfs:
+#    path: /shared
+    path: /volumes 
+    server: 10.189.159.34

@@ -1,0 +1,11 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: filestorepvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: filestore-rwx
+  resources:
+    requests:
+      storage: 1Ti
