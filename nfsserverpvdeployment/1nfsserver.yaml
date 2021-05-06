@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-server-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+#  storageClassName: ""
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfs-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: nfs-server
+  template:
+    metadata:
+      labels:
+        role: nfs-server
+    spec:
+      containers:
+      - name: nfs-server
+        #image: gcr.io/google_containers/volume-nfs:0.8
+        image: gcr.io/google_containers/volume-nfs:latest
+        ports:
+          - name: nfs
+            containerPort: 2049
+          - name: mountd
+            containerPort: 20048
+          - name: rpcbind
+            containerPort: 111
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsUser: 0
+          # privileged: true
+        volumeMounts:
+          - mountPath: /exports
+            name: nfs-server-pv
+      volumes:
+        - name: nfs-server-pv
+          persistentVolumeClaim:
+            claimName: nfs-server-pvc
